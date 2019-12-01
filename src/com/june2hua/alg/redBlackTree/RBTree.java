@@ -51,4 +51,6 @@ class RBTree {
 		rootLeftChild.right=root;
 		root.parent=rootLeftChild;
 	}
+	
+	
 }
