@@ -4,7 +4,8 @@ package com.june2hua.alg.redBlackTree;
  * 为了简便编程，默认节点的值为整型,Node节点的属性可见性设置为public
  * detail:
  * 1.左旋和右旋的时候，注意修改parent的值，以及parent的孩子节点
- * 2.
+ * 2.插入和删除的时候，需要进行判空处理，以及红黑树是否为空处理
+ * 3.左旋操作
  * */
 public class Main {
 
