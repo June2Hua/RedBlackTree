@@ -151,6 +151,89 @@ class RBTree {
 		postOrder(node.right);
 		System.out.println(node.data);
 	}
+	//删除一个节点
+	public void remove(Node node){
+		//如果删除的为叶子节点，直接删除
+		if(node.left==null&&node.right==null){
+			if(node.parent.left==node)
+				node.parent.left=null;
+			else
+				node.parent.right=null;
+			node=null;//释放node空间
+			return;
+		}
+		//如果删除的节点有左右孩子
+		if(node.left!=null&&node.right!=null){
+			//找到后继结点，右子树的最左下角节点
+			Node replaceNode=node.right;
+			while(replaceNode.left!=null)
+				replaceNode=replaceNode.left;
+			//如果删除根节点
+			if(node==root){
+				root=replaceNode;
+			}else{//非根节点
+				//更换node的父节点的孩子节点
+				if(node.parent.left==node)
+					node.parent.left=replaceNode;
+				else
+					node.parent.right=replaceNode;
+			}
+			//保存变量
+			Node replaceChild=replaceNode.right;
+			Node replaceParent=replaceNode.parent;
+			boolean replaceColor=replaceNode.color;
+			//被删除的节点为后继结点的父节点
+			if(replaceParent.parent==node){
+				replaceParent=replaceNode;
+			}else{
+				//代替节点的孩子上移
+				if(replaceChild!=null)
+					replaceChild.parent=replaceParent;
+				replaceParent.left=replaceChild;
+				
+				//修改代替节点
+				replaceNode.right=node.right;
+				node.right.parent=replaceNode;
+			}
+			replaceNode.parent=node.parent;
+			replaceNode.color=node.color;
+			replaceNode.left=node.left;
+			node.left.parent=replaceNode;
+			if(replaceColor==Node.BLACK){
+				//进行红黑树修正
+				ajustmentForRemove();
+			}
+			return ;
+		}
+		//删除节点只有一个子树情况
+		Node nodeChild;
+		if(node.left==null)
+			nodeChild=node.right;
+		else
+			nodeChild=node.left;
+		//保存变量
+		Node nodeParent=node.parent;
+		boolean color=node.color;
+		//修改
+		nodeChild.parent=nodeParent;
+		if(node==root){//若删除的为根节点
+			root=node;
+		}else{
+			if(nodeParent.left==node){
+				nodeParent.left=nodeChild;
+			}else{
+				nodeParent.right=nodeChild;
+			}
+		}
+		if(color==Node.BLACK){
+			//进行红黑树修正
+			ajustmentForRemove();
+		}
+		node=null;//释放空间
+	}
+	public void ajustmentForRemove(){
+		
+	}
 }
 
 
