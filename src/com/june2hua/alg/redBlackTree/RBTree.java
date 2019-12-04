@@ -201,7 +201,7 @@ class RBTree {
 			node.left.parent=replaceNode;
 			if(replaceColor==Node.BLACK){
 				//进行红黑树修正
-				ajustmentForRemove();
+				ajustmentForRemove(replaceChild,replaceParent);
 			}
 			return ;
 		}
@@ -227,14 +227,84 @@ class RBTree {
 		}
 		if(color==Node.BLACK){
 			//进行红黑树修正
-			ajustmentForRemove();
+			ajustmentForRemove(nodeChild,nodeParent);
 		}
 		node=null;//释放空间
 	}
-	public void ajustmentForRemove(){
-		
+	//重新调整为红黑树
+	public void ajustmentForRemove(Node node,Node parent){
+		Node tmp;
+		while((node!=root)&&(node==null||node.color==node.BLACK)){
+			//左孩子
+			if(parent.left==node){
+				tmp=parent.right;//node的兄弟节点
+				if(tmp.color==Node.RED){
+					//修改颜色
+					tmp.color=Node.BLACK;
+					parent.color=Node.RED;
+					//左旋
+					leftRotate(parent);
+					tmp=parent.right;
+				}
+				if((tmp.left==null||tmp.left.color==Node.BLACK)&&(tmp.right==null||tmp.right.color==Node.BLACK)){
+					tmp.color=Node.RED;
+					node=parent;
+					parent=node.parent;
+				}else{
+					if(tmp.right==null||tmp.right.color==Node.BLACK){
+						tmp.left.color=Node.BLACK;
+						tmp.color=Node.RED;
+						rightRotate(tmp);
+						tmp=parent.right;
+					}
+					tmp.color=parent.color;
+					parent.color=Node.BLACK;
+					tmp.right.color=Node.BLACK;
+					leftRotate(parent);
+					node=root;
+					break;
+				}
+			}else{//右孩子
+				tmp=parent.left;
+				if(tmp.color==Node.RED){
+					tmp.color=Node.BLACK;
+					parent.color=Node.RED;
+					rightRotate(parent);
+					tmp=parent.left;
+				}
+				if((tmp.left==null||tmp.left.color==Node.BLACK)&&(tmp.right==null||tmp.right.color==Node.BLACK)){
+					tmp.color=Node.RED;
+					node=parent;
+					parent=node.parent;
+				}else{
+					if(tmp.left==null||tmp.left.color==Node.BLACK){
+						tmp.right.color=Node.BLACK;
+						tmp.color=Node.RED;
+						leftRotate(tmp);
+						tmp=parent.left;
+					}
+					tmp.color=parent.color;
+					parent.color=Node.BLACK;
+					tmp.left.color=Node.BLACK;
+					rightRotate(parent);
+					node=root;
+					break;
+				}
+			}
+		}
+		if(node!=null)
+			node.color=Node.BLACK;
 	}
 }
+
+
+
+
+
+
+
+
+
 
 
 
